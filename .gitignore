@@ -1,0 +1,8 @@
+<<<<<<< HEAD
+.gradle
+local.properties
+.idea
+.DS_Store
+/build
+/captures
+AutoLoopViewPager.iml

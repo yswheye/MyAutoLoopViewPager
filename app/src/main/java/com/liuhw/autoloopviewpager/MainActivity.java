@@ -1,35 +1,25 @@
 package com.liuhw.autoloopviewpager;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.ToxicBakery.viewpager.transforms.ForegroundToBackgroundTransformer;
-import com.liuhw.autoloopviewpager.adapter.BannerAdapter;
+import com.ToxicBakery.viewpager.transforms.AccordionTransformer;
+import com.liuhw.autoloopviewpager.listener.PageCallback;
 import com.liuhw.autoloopviewpager.pagerindicator.AutoLoopViewPager;
 import com.liuhw.autoloopviewpager.pagerindicator.CirclePageIndicator;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PageCallback {
 
     private AutoLoopViewPager bannerViewPager;
     private CirclePageIndicator circlePagerIndicator;
-    private ArrayList<Integer> imageIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initData();
         initAutoLoopViewPager();
         initCirclePageIndicator();
     }
@@ -41,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initAutoLoopViewPager() {
         bannerViewPager = (AutoLoopViewPager) findViewById(R.id.bannerViewPager);
+        bannerViewPager.setOffscreenPageLimit(1);
         // viewpager中边界的view不销毁,防止在轮播时闪屏
         bannerViewPager.setBoundaryCaching(true);
         // 是否自动滚动,默认true
@@ -49,30 +40,36 @@ public class MainActivity extends AppCompatActivity {
         bannerViewPager.setDirection(AutoLoopViewPager.RIGHT);
         // 当滚动到最后一个时,是否添加动画
         bannerViewPager.setBorderAnimation(true);
-        // 滚动一个item需要的时间()
-        bannerViewPager.setAutoScrollDurationFactor(10);
-        // 设置滚动间隔时间 默认1500毫秒
-        bannerViewPager.setInterval(3000);
+        // 设置滚动间隔时间,停留时间 默认1500毫秒
+        bannerViewPager.setInterval(Long.MAX_VALUE);
+        bannerViewPager.setScrollDuration(1 * 1000);
 
-        BannerAdapter bannerAdapter = new BannerAdapter(this, imageIds);
-        bannerViewPager.setAdapter(bannerAdapter);
-//        bannerViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+//        BannerAdapter bannerAdapter = new BannerAdapter(this, imageIds);
+//        bannerViewPager.setAdapter(bannerAdapter);
 
-        bannerViewPager.setPageTransformer(true, new ForegroundToBackgroundTransformer());
-        bannerViewPager.startAutoScroll();
+        bannerViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+
+        /**
+         * ForegroundToBackgroundTransformer
+         * AccordionTransformer
+         */
+        bannerViewPager.setPageTransformer(true, new AccordionTransformer());
     }
 
-    private void initData() {
-        imageIds = new ArrayList<>();
-        imageIds.add(R.mipmap.guide01);
-        imageIds.add(R.mipmap.guide02);
-        imageIds.add(R.mipmap.guide03);
-        imageIds.add(R.mipmap.guide04);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
+    @Override
+    public void scrollNext() {
+        bannerViewPager.scrollOnce();
+    }
 
-    /***********************test***********************/
-    private static class MyPagerAdapter extends FragmentPagerAdapter {
+    /***********************
+     * test
+     ***********************/
+    private class MyPagerAdapter extends FragmentPagerAdapter {
 
         MyPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -80,7 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return DummyFragment.newInstance(position);
+            if (position == 2) {
+                return new VideoFragment();
+            }
+            return PictureFragment.newInstance(position);
         }
 
         @Override
@@ -91,32 +91,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return String.valueOf(position);
-        }
-    }
-
-    public static class DummyFragment extends Fragment {
-
-        private static final String ARGS_POSITION = "position";
-        private static final int[] COLORS = new int[] { 0xFF33B5E5, 0xFFAA66CC, 0xFF99CC00, 0xFFFFBB33, 0xFFFF4444 };
-
-        @NonNull
-        public static DummyFragment newInstance(int position) {
-            final DummyFragment f = new DummyFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARGS_POSITION, position);
-            f.setArguments(args);
-            return f;
-        }
-
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            int pos = getArguments().getInt(ARGS_POSITION);
-            final View view = inflater.inflate(R.layout.fragment_dummy, container, false);
-            view.setBackgroundColor(COLORS[pos % 5]);
-            final TextView textView = (TextView) view.findViewById(R.id.text);
-            textView.setText(String.valueOf(pos));
-            return view;
         }
     }
 

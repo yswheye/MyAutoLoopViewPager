@@ -91,25 +91,15 @@ public class AutoLoopViewPager extends ViewPager {
      * whether animating when auto scroll at the last or first item *
      */
     private boolean isBorderAnimation = true;
-    /**
-     * scroll factor for auto scroll animation, default is 1.0 *
-     */
-    private double autoScrollFactor = 1.0;
-    /**
-     * scroll factor for swipe scroll animation, default is 1.0 *
-     */
-    private double swipeScrollFactor = 1.0;
 
     private Handler handler;
     private boolean isAutoScroll = false;
     private boolean isStopByTouch = false;
-    private float touchX = 0f, downX = 0f;
+//    private float touchX = 0f, downX = 0f;
     private CustomDurationScroller scroller = null;
 
     public static final int SCROLL_WHAT = 0;
 
-
-    ////////////
     private static final boolean DEFAULT_BOUNDARY_CASHING = false;
 
     OnPageChangeListener mOuterPageChangeListener;
@@ -276,7 +266,6 @@ public class AutoLoopViewPager extends ViewPager {
         }
     };
 
-    ////////////////////////  auto scroll View
     private void initScrollfunction() {
         handler = new MyHandler();
         setViewPagerScroller();
@@ -306,20 +295,6 @@ public class AutoLoopViewPager extends ViewPager {
     public void stopAutoScroll() {
         isAutoScroll = false;
         handler.removeMessages(SCROLL_WHAT);
-    }
-
-    /**
-     * set the factor by which the duration of sliding animation will change while swiping
-     */
-    public void setSwipeScrollDurationFactor(double scrollFactor) {
-        swipeScrollFactor = scrollFactor;
-    }
-
-    /**
-     * set the factor by which the duration of sliding animation will change while auto scrolling
-     */
-    public void setAutoScrollDurationFactor(double scrollFactor) {
-        autoScrollFactor = scrollFactor;
     }
 
     private void sendScrollMessage(long delayTimeInMills) {
@@ -372,8 +347,6 @@ public class AutoLoopViewPager extends ViewPager {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         int action = MotionEventCompat.getActionMasked(ev);
-
-
         if (stopScrollWhenTouch) {
             if ((action == MotionEvent.ACTION_DOWN) && isAutoScroll) {
                 isStopByTouch = true;
@@ -397,14 +370,16 @@ public class AutoLoopViewPager extends ViewPager {
 
             switch (msg.what) {
                 case SCROLL_WHAT:
-                    scroller.setScrollDurationFactor(autoScrollFactor);
                     scrollOnce();
-                    scroller.setScrollDurationFactor(swipeScrollFactor);
                     sendScrollMessage(interval);
                 default:
                     break;
             }
         }
+    }
+
+    public void setScrollDuration(int time) {
+        scroller.setmDuration(time);
     }
 
     /**

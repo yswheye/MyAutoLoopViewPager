@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 
-import com.ToxicBakery.viewpager.transforms.AccordionTransformer;
+import com.ToxicBakery.viewpager.transforms.ForegroundToBackgroundTransformer;
 import com.liuhw.autoloopviewpager.listener.PageCallback;
 import com.liuhw.autoloopviewpager.pagerindicator.AutoLoopViewPager;
 import com.liuhw.autoloopviewpager.pagerindicator.CirclePageIndicator;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
         bannerViewPager.setBorderAnimation(true);
         // 设置滚动间隔时间,停留时间 默认1500毫秒
         bannerViewPager.setInterval(Long.MAX_VALUE);
-        bannerViewPager.setScrollDuration(1 * 1000);
+        bannerViewPager.setScrollDuration(1500);
 
 //        BannerAdapter bannerAdapter = new BannerAdapter(this, imageIds);
 //        bannerViewPager.setAdapter(bannerAdapter);
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
          * ForegroundToBackgroundTransformer
          * AccordionTransformer
          */
-        bannerViewPager.setPageTransformer(true, new AccordionTransformer());
+        bannerViewPager.setPageTransformer(true, new ForegroundToBackgroundTransformer());
     }
 
     @Override

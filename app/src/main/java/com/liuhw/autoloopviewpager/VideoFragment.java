@@ -61,7 +61,14 @@ public class VideoFragment extends Fragment {
     }
 
     private void initPlayer() {
-        String local_url = Environment.getExternalStorageDirectory().getAbsolutePath() + "/m1.mp4";
+        /**
+         * 对mp4的支持比较好
+         * xingyueshenhua1.mp4
+         * yulongpinqingmei.mp4
+         * Dancing Queen.mp4
+         * m1.mp4
+         */
+        String local_url = Environment.getExternalStorageDirectory().getAbsolutePath() + "/atest_video/Dancing Queen.mp4";
 
         videoPlayer.setUp(Uri.parse(local_url).toString());
 
@@ -156,7 +163,7 @@ public class VideoFragment extends Fragment {
 
             @Override
             public void onAutoComplete(String url, Object... objects) {
-                callback.scrollNext();
+                callback.scrollNext(VideoFragment.this);
             }
 
             @Override

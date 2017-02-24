@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.ToxicBakery.viewpager.transforms.ForegroundToBackgroundTransformer;
 import com.liuhw.autoloopviewpager.listener.PageCallback;
@@ -15,6 +16,8 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
 
     private AutoLoopViewPager bannerViewPager;
     private CirclePageIndicator circlePagerIndicator;
+
+    private boolean isRealResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
 
     private void initAutoLoopViewPager() {
         bannerViewPager = (AutoLoopViewPager) findViewById(R.id.bannerViewPager);
-        bannerViewPager.setOffscreenPageLimit(1);
+        bannerViewPager.setOffscreenPageLimit(0);
         // viewpager中边界的view不销毁,防止在轮播时闪屏
         bannerViewPager.setBoundaryCaching(true);
         // 是否自动滚动,默认true
@@ -57,12 +60,28 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (bannerViewPager != null && isRealResume) {
+            bannerViewPager.scrollOnce();
+        }
+        isRealResume = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isRealResume = true;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
     @Override
-    public void scrollNext() {
+    public void scrollNext(Fragment fragment) {
+        Log.d("_haha", "***scrollNext " + fragment.getClass().getSimpleName());
         bannerViewPager.scrollOnce();
     }
 

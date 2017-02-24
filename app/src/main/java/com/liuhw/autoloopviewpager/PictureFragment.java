@@ -28,12 +28,13 @@ public class PictureFragment extends Fragment {
             "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487765056311&di=eb5e8181d36ff5b38ddb7daaf4331604&imgtype=0&src=http%3A%2F%2Fimg6.web07.cn%2FUPics%2FBizhi%2F2016%2F0913%2F121474130955191.jpg",
             "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487765056311&di=5ffcf198681a9f1a99d91c49ef66f6c9&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201702%2F21%2F8268e60ca71e79e9449f5b9ef98c45fb.jpg"
     };
+    private int currentPos;
     private long DELAY_TIME = 8000;
     private Handler handler = new Handler();
     private Runnable nextRunnable = new Runnable() {
         @Override
         public void run() {
-            callback.scrollNext();
+            callback.scrollNext(PictureFragment.this);
         }
     };
 
@@ -61,11 +62,11 @@ public class PictureFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int pos = getArguments().getInt(ARGS_POSITION);
+        currentPos = getArguments().getInt(ARGS_POSITION);
         final View view = inflater.inflate(R.layout.fragment_dummy, container, false);
 //        view.setBackgroundColor(COLORS[pos % 5]);
         ImageView imageView = (ImageView) view.findViewById(R.id.img);
-        Glide.with(this).load(imgs[pos % 5]).into(imageView);
+        Glide.with(this).load(imgs[currentPos % 5]).into(imageView);
         return view;
     }
 
@@ -79,4 +80,11 @@ public class PictureFragment extends Fragment {
             handler.removeCallbacks(nextRunnable);
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(nextRunnable);
+    }
+
 }

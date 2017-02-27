@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.liuhw.autoloopviewpager.listener.PageCallback;
@@ -51,7 +52,7 @@ public class PictureFragment extends Fragment {
     }
 
     @NonNull
-    public static Fragment newInstance(int position) {
+    public static Fragment getInstance(int position) {
         Fragment f = new PictureFragment();
         Bundle args = new Bundle();
         args.putInt(ARGS_POSITION, position);
@@ -64,8 +65,9 @@ public class PictureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         currentPos = getArguments().getInt(ARGS_POSITION);
         final View view = inflater.inflate(R.layout.fragment_dummy, container, false);
-//        view.setBackgroundColor(COLORS[pos % 5]);
         ImageView imageView = (ImageView) view.findViewById(R.id.img);
+        TextView textView = (TextView) view.findViewById(R.id.text);
+        textView.setText("" + currentPos);
         Glide.with(this).load(imgs[currentPos % 5]).into(imageView);
         return view;
     }

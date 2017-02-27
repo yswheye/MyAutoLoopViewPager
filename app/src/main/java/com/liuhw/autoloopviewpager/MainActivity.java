@@ -1,6 +1,7 @@
 package com.liuhw.autoloopviewpager;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,13 +10,17 @@ import android.util.Log;
 
 import com.ToxicBakery.viewpager.transforms.ForegroundToBackgroundTransformer;
 import com.liuhw.autoloopviewpager.listener.PageCallback;
+import com.liuhw.autoloopviewpager.model.ADEntity;
 import com.liuhw.autoloopviewpager.pagerindicator.AutoLoopViewPager;
 import com.liuhw.autoloopviewpager.pagerindicator.CirclePageIndicator;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements PageCallback {
 
     private AutoLoopViewPager bannerViewPager;
     private CirclePageIndicator circlePagerIndicator;
+    private ArrayList<ADEntity> adEntities = new ArrayList<>();
 
     private boolean isRealResume;
 
@@ -25,6 +30,12 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
         setContentView(R.layout.activity_main);
         initAutoLoopViewPager();
         initCirclePageIndicator();
+    }
+
+    private void initData() {
+        adEntities.add(new ADEntity(Environment.getExternalStorageDirectory().getAbsolutePath() + "/atest_video/m1.mp4", ADEntity.ADType.VIDEO));
+        adEntities.add(new ADEntity("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487765056312&di=8945fe2fb2b7a89f5695c2aadd31dff4&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201702%2F21%2Fb18b14b8c6f441a4ffdefbffcdcb51b2.jpg", ADEntity.ADType.PIC));
+        adEntities.add(new ADEntity("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1487765056312&di=9dffef09a2de1eae7811654e33f02f36&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201702%2F21%2F52002d5e8b6b81b67b416297b537b119.jpg", ADEntity.ADType.PIC));
     }
 
     private void initCirclePageIndicator() {
@@ -81,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
 
     @Override
     public void scrollNext(Fragment fragment) {
-        Log.d("_haha", "***scrollNext " + fragment.getClass().getSimpleName());
         bannerViewPager.scrollOnce();
     }
 
@@ -96,10 +106,15 @@ public class MainActivity extends AppCompatActivity implements PageCallback {
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 2) {
+            Log.d("_haha", "getItem = " + position);
+            int realPos = position - 1;
+            if (realPos < 0 || realPos >= 5) {
+                realPos = 0;
+            }
+            if (realPos == 1) {
                 return new VideoFragment();
             }
-            return PictureFragment.newInstance(position);
+            return PictureFragment.getInstance(realPos);
         }
 
         @Override

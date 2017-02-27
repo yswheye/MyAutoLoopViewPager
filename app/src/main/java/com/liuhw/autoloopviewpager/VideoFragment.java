@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,10 +33,22 @@ import java.io.File;
  * @date 2017-02-20
  */
 public class VideoFragment extends Fragment {
+    private static final String ARGS_URL = "video_url";
     private MyVideoView videoPlayer;
     private OrientationUtils orientationUtils;
 
     private PageCallback callback;
+
+    private String video_url = Environment.getExternalStorageDirectory().getAbsolutePath() + "/atest_video/m1.mp4";
+
+    @NonNull
+    public static Fragment getInstance(String url) {
+        Fragment f = new PictureFragment();
+        Bundle args = new Bundle();
+        args.putString(ARGS_URL, url);
+        f.setArguments(args);
+        return f;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -56,6 +69,7 @@ public class VideoFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+//        video_url = getArguments().getString(ARGS_URL);
         videoPlayer = (MyVideoView) view.findViewById(R.id.video_player);
         initPlayer();
     }
@@ -68,14 +82,14 @@ public class VideoFragment extends Fragment {
          * Dancing Queen.mp4
          * m1.mp4
          */
-        String local_url = Environment.getExternalStorageDirectory().getAbsolutePath() + "/atest_video/Dancing Queen.mp4";
+        //String local_url = Environment.getExternalStorageDirectory().getAbsolutePath() + "/atest_video/m1.mp4";
 
-        videoPlayer.setUp(Uri.parse(local_url).toString());
+        videoPlayer.setUp(Uri.parse(video_url).toString());
 
         //增加封面
         ImageView imageView = new ImageView(getActivity());
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Glide.with(this).load(Uri.fromFile(new File(local_url))).into(imageView);
+        Glide.with(this).load(Uri.fromFile(new File(video_url))).into(imageView);
 //        //获取视频第一帧
 //        MediaMetadataRetriever media = new MediaMetadataRetriever();
 //        media.setDataSource(local_url);

@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,10 @@ import java.io.File;
  * @date 2017-02-20
  */
 public class VideoFragment extends Fragment {
+    public static final String TAG = "_haha";
     private static final String ARGS_URL = "video_url";
+    private static final String ARGS_PLAY = "video_play";
+    private static final String ARGS_LAST = "video_last";
     private MyVideoView videoPlayer;
     private OrientationUtils orientationUtils;
 
@@ -41,11 +45,15 @@ public class VideoFragment extends Fragment {
 
     private String video_url = Environment.getExternalStorageDirectory().getAbsolutePath() + "/atest_video/m1.mp4";
 
+    private boolean lastPage;
+
     @NonNull
-    public static Fragment getInstance(String url) {
-        Fragment f = new PictureFragment();
+    public static Fragment getInstance(String url, boolean firstPlay, boolean lastPage) {
+        Fragment f = new VideoFragment();
         Bundle args = new Bundle();
         args.putString(ARGS_URL, url);
+        args.putBoolean(ARGS_PLAY, firstPlay);
+        args.putBoolean(ARGS_LAST, lastPage);
         f.setArguments(args);
         return f;
     }
@@ -69,9 +77,14 @@ public class VideoFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        video_url = getArguments().getString(ARGS_URL);
+        video_url = getArguments().getString(ARGS_URL);
+        boolean startPlay = getArguments().getBoolean(ARGS_PLAY);
+        lastPage = getArguments().getBoolean(ARGS_LAST);
         videoPlayer = (MyVideoView) view.findViewById(R.id.video_player);
         initPlayer();
+        if (startPlay) {
+            videoPlayer.startPlayLogic();
+        }
     }
 
     private void initPlayer() {
@@ -82,8 +95,6 @@ public class VideoFragment extends Fragment {
          * Dancing Queen.mp4
          * m1.mp4
          */
-        //String local_url = Environment.getExternalStorageDirectory().getAbsolutePath() + "/atest_video/m1.mp4";
-
         videoPlayer.setUp(Uri.parse(video_url).toString());
 
         //增加封面
@@ -224,6 +235,10 @@ public class VideoFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        Log.d(TAG, "video isVisibleToUser = " + isVisibleToUser + ", lastPage = " + lastPage + ", state = " + ((videoPlayer == null)?"-1":videoPlayer.getCurrentState()));
+        if (lastPage) {
+            return;
+        }
         if (isVisibleToUser) {
             if (videoPlayer != null) {
                 videoPlayer.startPlayLogic();

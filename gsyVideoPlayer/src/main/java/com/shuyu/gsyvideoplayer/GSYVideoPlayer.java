@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.LogPrinter;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;

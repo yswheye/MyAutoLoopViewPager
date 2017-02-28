@@ -352,7 +352,7 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
             mStandardVideoAllCallBack.onClickStartThumb(mUrl, mObjects);
         }
         prepareVideo();
-        startDismissControlViewTimer();
+//        startDismissControlViewTimer();
     }
 
     @Override
